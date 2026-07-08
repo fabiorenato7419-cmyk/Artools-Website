@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OPUS — Uma caneta que redefine a escrita.</title>
+    <meta name="description" content="A combinação perfeita entre precisão, design e tecnologia para profissionais exigentes." />
+
+    <!--
+      ════════════════════════════════════════════════════════════════
+      VÍDEO FLUIDO — canvas + sequência de frames (técnica "Apple"), full-bleed.
+      TEXTO/BOTÕES — blur-in + fade-in na entrada; blur-out + fade-out
+      escalonado na saída (amarrado ao scroll, reversível ao subir).
+      Classes/valores do design_system.html (reveal · easing 0.16,1,0.3,1).
+      ════════════════════════════════════════════════════════════════
+    -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ========= DESIGN TOKENS — from design_system12.html (OPUS) ========= */
+        :root {
+            --gallery: #F0EFEA;
+            --white: #FFFFFF;
+            --ink: #191919;
+            --jade: #10b981;
+            --jade-300: #6ee7b7;
+            --jade-700: #047857;
+            --stone-300: #D6D3D1;
+            --stone-400: #a8a29e;
+            --stone-500: #78716C;
+            --font-sans: 'Manrope', sans-serif;
+            --font-serif: 'Instrument Serif', serif;
+            --font-mono: 'Space Mono', monospace;
+            --ease-opus: cubic-bezier(0.16, 1, 0.3, 1);
+            --glass-bg: rgba(255, 255, 255, .55);
+            --glass-blur: 18px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { height: 100%; }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--gallery);
+            color: var(--ink);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::selection { background: var(--jade); color: #fff; }
+
+        /* ========= Serif gradient accent (line 3) ========= */
+        .t-serif-ghost {
+            font-family: var(--font-serif); font-style: italic; font-weight: 400;
+            color: transparent;
+            background: linear-gradient(115deg, #191919 15%, var(--jade-700) 60%, var(--jade-300) 100%);
+            -webkit-background-clip: text; background-clip: text;
+        }
+
+        @keyframes drift-up {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            15% { opacity: .45; } 85% { opacity: .45; }
+            100% { transform: translateY(-46vh) translateX(14px); opacity: 0; }
+        }
+        .particle {
+            position: absolute; bottom: 8%; width: 4px; height: 4px; z-index: 4;
+            border-radius: 50%; background: var(--jade); opacity: 0;
+            animation: drift-up 11s linear infinite; will-change: transform, opacity; pointer-events: none;
+        }
+
+        /* ========= NAV ========= */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1.1rem clamp(1.25rem, 4vw, 3.5rem);
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur)); -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-bottom: 1px solid rgba(214, 211, 209, .55);
+        }
+        .nav__logo { font-weight: 800; letter-spacing: -0.04em; font-size: 1.15rem; text-decoration: none; color: var(--ink); }
+        .nav__logo em { font-family: var(--font-serif); font-weight: 400; color: var(--jade-700); }
+        .nav__links { display: flex; gap: clamp(1.25rem, 3vw, 2.75rem); list-style: none; }
+        .nav__links a {
+            font-size: .7rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
+            text-decoration: none; color: var(--stone-500);
+            transition: color .4s var(--ease-opus); position: relative;
+        }
+        .nav__links a::after {
+            content: ""; position: absolute; left: 0; bottom: -6px; width: 100%; height: 1px;
+            background: var(--jade); transform: scaleX(0); transform-origin: right;
+            transition: transform .5s var(--ease-opus);
+        }
+        .nav__links a:hover { color: var(--ink); }
+        .nav__links a:hover::after { transform: scaleX(1); transform-origin: left; }
+        .nav__cart {
+            display: inline-flex; align-items: center; gap: .5rem;
+            font-size: .7rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+            color: var(--ink); text-decoration: none; border: 1px solid var(--ink);
+            border-radius: 999px; padding: .55rem 1.1rem;
+            transition: background .4s var(--ease-opus), color .4s var(--ease-opus);
+        }
+        .nav__cart svg { width: 14px; height: 14px; }
+        .nav__cart:hover { background: var(--ink); color: #fff; }
+
+        /* ========= HERO (full-bleed video) ========= */
+        .hero {
+            position: relative; min-height: 100vh; width: 100%; overflow: hidden;
+            display: flex; align-items: center;
+            padding: clamp(6rem, 12vh, 8rem) clamp(1.5rem, 6vw, 6rem) clamp(4rem, 9vh, 6rem);
+        }
+
+        /* full-bleed media layer (canvas + video) */
+        .hero__media { position: absolute; inset: 0; z-index: 0; overflow: hidden; will-change: transform; }
+        #seq-canvas, #product-video {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; display: block;
+        }
+        #seq-canvas { z-index: 2; opacity: 0; transition: opacity .6s ease; }
+        #seq-canvas.on { opacity: 1; }
+        #product-video { z-index: 1; transition: opacity .6s ease; }
+        #product-video.hide { opacity: 0; }
+
+        /* legibility scrim (paper tone on the left) + soft vignette */
+        .hero__scrim {
+            position: absolute; inset: 0; z-index: 3; pointer-events: none;
+            background:
+                linear-gradient(101deg,
+                    rgba(240,239,234,.96) 0%,
+                    rgba(240,239,234,.82) 24%,
+                    rgba(240,239,234,.40) 46%,
+                    rgba(240,239,234,.05) 62%,
+                    rgba(240,239,234,0) 72%),
+                radial-gradient(130% 90% at 60% 108%, rgba(25,25,25,.12), transparent 60%);
+        }
+
+        /* content overlay */
+        .hero__content { position: relative; z-index: 10; max-width: 660px; width: 100%; }
+
+        /* elements that animate in/out get GPU hints */
+        .hero__eyebrow, .hero__title, .hero__desc, .hero__ctas, .hero__plaque {
+            will-change: transform, opacity, filter;
+        }
+
+        .hero__eyebrow {
+            display: inline-flex; align-items: center; gap: .7rem;
+            font-family: var(--font-mono); font-size: .68rem; letter-spacing: .32em;
+            text-transform: uppercase; color: var(--stone-500); margin-bottom: clamp(1rem, 2.4vh, 1.6rem);
+        }
+        @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
+        .hero__eyebrow i { width: 6px; height: 6px; border-radius: 50%; background: var(--jade); animation: pulse-dot 2s ease-in-out infinite; }
+
+        /* — compact stacked headline (tight leading, no line gaps) — */
+        .hero__title { font-weight: 800; letter-spacing: -0.045em; line-height: .86; font-size: clamp(2.7rem, 6vw, 5.4rem); }
+        .hero__title .line { display: block; overflow: hidden; }
+        .hero__title .line--2 { color: var(--stone-400); }
+        .hero__title .line--3 { font-size: clamp(3rem, 6.6vw, 5.9rem); letter-spacing: -0.02em; }
+        .line__inner { display: inline-block; will-change: transform; }
+
+        .hero__desc {
+            margin-top: clamp(1.4rem, 3vh, 2.1rem); max-width: 42ch;
+            font-size: clamp(.95rem, 1.1vw, 1.08rem); font-weight: 400; line-height: 1.65; color: var(--stone-500);
+        }
+        .hero__ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; margin-top: clamp(1.6rem, 4vh, 2.6rem); }
+
+        /* — beam primary button — */
+        @keyframes beam-spin { to { transform: rotate(360deg); } }
+        @keyframes shimmer { from { transform: translateX(-100%) skewX(-15deg); } to { transform: translateX(200%) skewX(-15deg); } }
+        .btn-beam {
+            position: relative; display: inline-flex; border: 0; padding: 1.5px; border-radius: 999px;
+            overflow: hidden; cursor: pointer; background: transparent; isolation: isolate; will-change: transform;
+        }
+        .btn-beam::before { content: ""; position: absolute; inset: -1000%; background: conic-gradient(from 0deg, transparent 0 320deg, var(--jade) 360deg); animation: beam-spin 3s linear infinite; }
+        .btn-beam__inner {
+            position: relative; display: inline-flex; align-items: center; gap: .8rem;
+            background: var(--ink); color: #fff; border-radius: 999px; padding: 1.05rem 2.2rem;
+            font-family: var(--font-sans); font-size: .9rem; font-weight: 600; letter-spacing: .02em; overflow: hidden;
+        }
+        .btn-beam__inner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent); transform: translateX(-100%) skewX(-15deg); opacity: 0; }
+        .btn-beam:hover .btn-beam__inner::after { opacity: 1; animation: shimmer 1.4s infinite; }
+        .btn-beam__inner svg { width: 15px; height: 15px; transition: transform .45s var(--ease-opus); }
+        .btn-beam:hover .btn-beam__inner svg { transform: translateX(4px); }
+
+        /* — ghost secondary button — */
+        .btn-ghost {
+            display: inline-flex; align-items: center; gap: .6rem;
+            font-size: .78rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
+            color: var(--ink); text-decoration: none; border: 1px solid var(--ink);
+            border-radius: 999px; padding: .95rem 1.9rem;
+            transition: background .45s var(--ease-opus), color .45s var(--ease-opus); will-change: transform;
+            background: rgba(240,239,234,.35); backdrop-filter: blur(4px);
+        }
+        .btn-ghost:hover { background: var(--ink); color: #fff; }
+
+        /* ========= Floating product plaque ========= */
+        .hero__plaque {
+            position: absolute; z-index: 10;
+            right: clamp(1.5rem, 4vw, 4rem); bottom: clamp(4.5rem, 12vh, 7rem);
+            background: var(--glass-bg); backdrop-filter: blur(var(--glass-blur)); -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid rgba(255,255,255,.7); border-radius: 12px; padding: .8rem 1.4rem;
+            display: flex; align-items: center; gap: 1rem; white-space: nowrap;
+            box-shadow: 0 18px 44px -20px rgba(25,25,25,.4);
+        }
+        .hero__plaque strong { font-size: .84rem; font-weight: 700; letter-spacing: -.01em; }
+        .hero__plaque span { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .12em; color: var(--stone-500); text-transform: uppercase; }
+        .hero__plaque i { width: 5px; height: 5px; border-radius: 50%; background: var(--jade); }
+
+        /* ========= Side indicator ========= */
+        .side-indicator { position: fixed; right: clamp(1rem, 2.5vw, 2.2rem); top: 50%; transform: translateY(-50%); z-index: 55; display: flex; flex-direction: column; align-items: center; gap: .9rem; mix-blend-mode: difference; }
+        .side-indicator__num { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .2em; color: #fff; }
+        .side-indicator__track { width: 2px; height: 88px; background: rgba(255,255,255,.28); border-radius: 2px; overflow: hidden; }
+        .side-indicator__fill { width: 100%; height: 100%; background: #fff; transform-origin: top; transform: scaleY(0); will-change: transform; }
+        .side-indicator__total { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .2em; color: rgba(255,255,255,.6); }
+
+        /* ========= Scroll hint ========= */
+        .scroll-hint { position: fixed; left: 50%; bottom: 1.6rem; transform: translateX(-50%); z-index: 55; display: flex; flex-direction: column; align-items: center; gap: .55rem; pointer-events: none; }
+        .scroll-hint span { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .42em; text-transform: uppercase; color: var(--stone-500); }
+        @keyframes hint-line { 0% { transform: scaleY(0); transform-origin: top; } 45% { transform: scaleY(1); transform-origin: top; } 55% { transform: scaleY(1); transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+        .scroll-hint i { width: 1px; height: 34px; background: var(--ink); animation: hint-line 2.2s var(--ease-opus) infinite; }
+
+        /* ========= Responsive ========= */
+        @media (max-width: 900px) {
+            .hero { align-items: flex-end; padding-bottom: clamp(5rem, 16vh, 8rem); }
+            .hero__scrim {
+                background:
+                    linear-gradient(180deg, rgba(240,239,234,0) 30%, rgba(240,239,234,.55) 62%, rgba(240,239,234,.92) 100%),
+                    linear-gradient(101deg, rgba(240,239,234,.5) 0%, rgba(240,239,234,0) 60%);
+            }
+            .hero__content { max-width: 100%; }
+            .hero__plaque { bottom: auto; top: clamp(5rem, 12vh, 7rem); right: clamp(1rem, 4vw, 2rem); }
+            .side-indicator { display: none; }
+        }
+        @media (max-width: 640px) {
+            .nav__links { display: none; }
+            .hero__ctas { gap: .9rem; } .btn-beam__inner { padding: .95rem 1.7rem; }
+        }
+        @media (prefers-reduced-motion: reduce) { .particle, .scroll-hint i { animation: none !important; } }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAV ================= -->
+    <header class="nav" id="nav">
+        <a class="nav__logo" href="#">OPUS<em>.pen</em></a>
+        <nav>
+            <ul class="nav__links">
+                <li><a href="#design">Design</a></li>
+                <li><a href="#tecnologia">Tecnologia</a></li>
+                <li><a href="#especificacoes">Especificações</a></li>
+            </ul>
+        </nav>
+        <a class="nav__cart" href="#carrinho" aria-label="Carrinho">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1 13H5L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+            Carrinho
+        </a>
+    </header>
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="hero">
+
+        <!-- full-bleed media : the pen video is the centerpiece -->
+        <div class="hero__media" id="media">
+            <canvas id="seq-canvas"></canvas>
+            <video id="product-video" src="assets/raw_files/video3.mp4" muted playsinline preload="auto" aria-label="Vídeo da caneta OPUS"></video>
+        </div>
+
+        <!-- legibility scrim -->
+        <div class="hero__scrim"></div>
+
+        <!-- ambient particles -->
+        <div class="particle" style="left:10%; animation-delay:0s;"></div>
+        <div class="particle" style="left:22%; animation-delay:3.2s;"></div>
+        <div class="particle" style="left:34%; animation-delay:6.4s;"></div>
+        <div class="particle" style="left:16%; animation-delay:8.1s;"></div>
+
+        <!-- content overlay -->
+        <div class="hero__content">
+            <p class="hero__eyebrow" data-fade><i></i>Edição 01 · Lançamento 2026</p>
+
+            <h1 class="hero__title" aria-label="Uma caneta que redefine a escrita.">
+                <span class="line line--1" data-split>Uma caneta</span>
+                <span class="line line--2" data-split>que redefine</span>
+                <span class="line line--3"><span class="line__inner t-serif-ghost" id="lineGhost">a escrita.</span></span>
+            </h1>
+
+            <p class="hero__desc" data-fade>
+                A combinação perfeita entre precisão, design e tecnologia
+                para profissionais exigentes.
+            </p>
+
+            <div class="hero__ctas" data-fade>
+                <button class="btn-beam" data-magnetic>
+                    <span class="btn-beam__inner">
+                        Comprar Agora
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+                    </span>
+                </button>
+                <a class="btn-ghost" href="#design" data-magnetic>Conhecer</a>
+            </div>
+        </div>
+
+        <!-- floating product plaque -->
+        <div class="hero__plaque" data-fade>
+            <strong>OPUS nº1</strong>
+            <i></i>
+            <span>Titânio · ponta 0.4&nbsp;mm</span>
+        </div>
+    </section>
+
+    <!-- ================= Side indicator ================= -->
+    <aside class="side-indicator" aria-hidden="true">
+        <span class="side-indicator__num">01</span>
+        <div class="side-indicator__track"><div class="side-indicator__fill" id="indicatorFill"></div></div>
+        <span class="side-indicator__total">/ 01</span>
+    </aside>
+
+    <!-- ================= Scroll hint ================= -->
+    <div class="scroll-hint" id="scrollHint">
+        <span>Scroll to explore</span>
+        <i></i>
+    </div>
+
+    <!-- ================= Libraries (CDN) ================= -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js"></script>
+
+    <script>
+        /* ============================================================
+           OPUS.pen — full-bleed Hero controller
+           ============================================================ */
+        gsap.registerPlugin(ScrollTrigger);
+
+        /* ---------- Lenis smooth scroll on the GSAP ticker ---------- */
+        const lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((t) => lenis.raf(t * 1000));
+        gsap.ticker.lagSmoothing(0);
+
+        /* ---------- Base transform for the media (overscan for parallax) ---------- */
+        const media = document.getElementById('media');
+        gsap.set(media, { scale: 1.06 });
+
+        /* ============================================================
+           ENTRANCE — blur-in + fade-in on load (text + buttons)
+           (mask reveal on the headline + blur/fade on everything)
+           ============================================================ */
+        document.querySelectorAll('[data-split]').forEach((el) => new SplitType(el, { types: 'chars' }));
+        gsap.timeline({
+            defaults: { ease: 'expo.out' },
+            // tight leading clips descenders while overflow is hidden — release it
+            // once the reveal is done so lines stay compact AND nothing is cut.
+            onComplete: () => gsap.set('.hero__title .line', { overflow: 'visible' })
+        })
+            .from('#media', { autoAlpha: 0, duration: 1.6 }, 0)
+            .from('#nav', { yPercent: -100, autoAlpha: 0, duration: 1 }, 0.1)
+            .from('.hero__title', { filter: 'blur(14px)', duration: 1.5, ease: 'power2.out' }, 0.3)   // blur-in on the whole headline
+            .from('.line--1 .char', { yPercent: 115, duration: 1.1, stagger: 0.035 }, 0.3)
+            .from('.line--2 .char', { yPercent: 115, duration: 1.1, stagger: 0.035 }, 0.45)
+            .from('#lineGhost', { yPercent: 115, duration: 1.25 }, 0.65)
+            .from('[data-fade]', { y: 26, autoAlpha: 0, filter: 'blur(10px)', duration: 1, stagger: 0.12 }, 0.9)
+            .from('.side-indicator', { x: 30, autoAlpha: 0, duration: 1 }, 1.1);
+
+        /* ---------- Shared scroll progress (0 → 1) for the pinned hero ---------- */
+        let progress = 0;
+        ScrollTrigger.create({
+            trigger: '#hero', start: 'top top', end: '+=280%',
+            pin: true, scrub: true, anticipatePin: 1,
+            onUpdate: (self) => {
+                progress = self.progress;
+                gsap.set('#indicatorFill', { scaleY: progress });
+                gsap.set('#scrollHint', { autoAlpha: 1 - Math.min(progress * 6, 1) });
+            },
+        });
+
+        /* ============================================================
+           EXIT — same animation, reversed: blur-out + fade-out as you
+           scroll down (staggered), and it reverses back when scrolling up.
+           immediateRender:false → keeps the natural state until scrolled,
+           so it never fights the entrance timeline on load.
+           ============================================================ */
+        gsap.timeline({
+            defaults: { ease: 'none', immediateRender: false },
+            scrollTrigger: { trigger: '#hero', start: 'top top', end: '+=150%', scrub: true }
+        })
+            .to('.hero__eyebrow',      { autoAlpha: 0, y: -36, filter: 'blur(12px)' }, 0.00)
+            .to('.hero__title .line',  { autoAlpha: 0, y: -56, filter: 'blur(16px)', stagger: 0.05 }, 0.04)
+            .to('.hero__desc',         { autoAlpha: 0, y: -40, filter: 'blur(12px)' }, 0.16)
+            .to('.hero__ctas',         { autoAlpha: 0, y: -40, filter: 'blur(12px)' }, 0.22)
+            .to('.hero__plaque',       { autoAlpha: 0, y: 30,  filter: 'blur(12px)' }, 0.10);
+
+        /* ============================================================
+           ENGINE SELECTION — probe assets/frames/frame_0001.jpg
+           ============================================================ */
+        const FRAME_DIR = 'assets/frames/', FRAME_EXT = '.jpg';
+        const frameURL = (i) => FRAME_DIR + 'frame_' + String(i).padStart(4, '0') + FRAME_EXT;
+        const loadImg = (src) => new Promise((res) => {
+            const img = new Image();
+            img.onload = () => res(img); img.onerror = () => res(null); img.src = src;
+        });
+
+        (async function initSequence() {
+            const first = await loadImg(frameURL(1));
+            if (!first) { startVideoEngine(); return; }
+            const frames = [first];
+            let i = 2, alive = true;
+            while (alive && i <= 3000) {
+                const batch = [];
+                for (let k = 0; k < 16; k++) batch.push(loadImg(frameURL(i + k)));
+                const imgs = await Promise.all(batch);
+                for (let k = 0; k < 16; k++) {
+                    if (imgs[k]) frames[i + k - 1] = imgs[k];
+                    else { alive = false; break; }
+                }
+                i += 16;
+            }
+            startCanvasEngine(frames.filter(Boolean));
+        })();
+
+        /* ============================================================
+           ENGINE A — Canvas frame sequence (no decode, no seek)
+           ============================================================ */
+        function startCanvasEngine(frames) {
+            const COUNT = frames.length;
+            if (COUNT < 2) { startVideoEngine(); return; }
+
+            const canvas = document.getElementById('seq-canvas');
+            const ctx = canvas.getContext('2d');
+            const video = document.getElementById('product-video');
+            canvas.classList.add('on');
+
+            let cw = 0, ch = 0;
+            function sizeCanvas() {
+                const r = canvas.getBoundingClientRect();
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                const w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
+                if (w && h && (w !== cw || h !== ch)) { canvas.width = w; canvas.height = h; cw = w; ch = h; }
+            }
+            function draw(idx) {
+                const img = frames[Math.max(0, Math.min(COUNT - 1, idx))];
+                if (!img || !cw) return;
+                const ir = img.naturalWidth / img.naturalHeight, cr = cw / ch;
+                let dw, dh;
+                if (ir > cr) { dh = ch; dw = ch * ir; } else { dw = cw; dh = cw / ir; }
+                ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+            }
+            let currentFrame = 0;
+            gsap.ticker.add(() => {
+                sizeCanvas();
+                const target = progress * (COUNT - 1);
+                currentFrame += (target - currentFrame) * 0.2;
+                draw(Math.round(currentFrame));
+            });
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                sizeCanvas(); draw(0);
+                setTimeout(() => video.classList.add('hide'), 120);
+            }));
+        }
+
+        /* ============================================================
+           ENGINE B — Seek-gated video scrub (fallback)
+           ============================================================ */
+        function startVideoEngine() {
+            const video = document.getElementById('product-video');
+            let seeking = false, ready = false;
+            video.addEventListener('seeked', () => { seeking = false; });
+            function prime() {
+                video.play().then(() => { video.pause(); video.currentTime = 0; ready = true; })
+                             .catch(() => { ready = true; });
+            }
+            if (video.readyState >= 1) prime();
+            else video.addEventListener('loadedmetadata', prime, { once: true });
+            gsap.ticker.add(() => {
+                if (!ready || !video.duration || seeking) return;
+                const target = progress * (video.duration - 0.05);
+                if (Math.abs(video.currentTime - target) > 0.033) { seeking = true; video.currentTime = target; }
+            });
+        }
+
+        /* ---------- Scroll-linked depth (media slow-zoom) ---------- */
+        gsap.to('#media', { scale: 1.14, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: '+=280%', scrub: true } });
+
+        /* ---------- Mouse parallax (media drift + magnetic buttons) ---------- */
+        const fine = window.matchMedia('(pointer: fine)').matches;
+        if (fine) {
+            const mx = gsap.quickTo(media, 'x', { duration: 1, ease: 'power3.out' });
+            const my = gsap.quickTo(media, 'y', { duration: 1, ease: 'power3.out' });
+            window.addEventListener('mousemove', (e) => {
+                const nx = e.clientX / window.innerWidth - 0.5;
+                const ny = e.clientY / window.innerHeight - 0.5;
+                mx(nx * -24); my(ny * -24);
+            });
+
+            document.querySelectorAll('[data-magnetic]').forEach((btn) => {
+                const qx = gsap.quickTo(btn, 'x', { duration: 0.5, ease: 'power3.out' });
+                const qy = gsap.quickTo(btn, 'y', { duration: 0.5, ease: 'power3.out' });
+                btn.addEventListener('mousemove', (e) => {
+                    const r = btn.getBoundingClientRect();
+                    qx((e.clientX - r.left - r.width / 2) * 0.22);
+                    qy((e.clientY - r.top - r.height / 2) * 0.22);
+                });
+                btn.addEventListener('mouseleave', () => { qx(0); qy(0); });
+            });
+        }
+    </script>
+</body>
+
+</html>
