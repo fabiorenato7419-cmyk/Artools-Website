@@ -405,6 +405,78 @@
         .tech__marquee .track .star { color: var(--jade); }
         @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
+
+        /* ============================================================
+           THIRD FOLD — "A experiência" (sensorial / em uso)
+           ============================================================ */
+        .exp {
+            position: relative; z-index: 20; background: var(--gallery);
+            border-top: 1px solid var(--stone-300); perspective: 1400px;
+            padding: clamp(6rem, 13vh, 11rem) clamp(1.5rem, 6vw, 6rem) clamp(5rem, 10vh, 8rem);
+            overflow: hidden;
+        }
+        .exp__orb {
+            position: absolute; z-index: 0; border-radius: 50%; filter: blur(80px); pointer-events: none;
+            width: 38rem; height: 38rem; left: -10rem; top: 16%;
+            background: radial-gradient(circle, rgba(16,185,129,.10), transparent 65%);
+            animation: floaty 18s ease-in-out infinite;
+        }
+        .exp__orb.exp__orb--2 { left: auto; right: -12rem; top: auto; bottom: 4%; width: 30rem; height: 30rem; background: radial-gradient(circle, rgba(168,162,158,.16), transparent 65%); animation-direction: reverse; }
+
+        .exp__head { position: relative; z-index: 2; text-align: center; max-width: 920px; margin: 0 auto clamp(2.5rem, 5vh, 4rem); }
+        .exp__eyebrow {
+            font-family: var(--font-mono); font-size: .66rem; letter-spacing: .3em; text-transform: uppercase;
+            color: var(--jade-700); display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 1.4rem;
+            will-change: transform, opacity, filter;
+        }
+        .exp__eyebrow i { width: 6px; height: 6px; border-radius: 50%; background: var(--jade); animation: pulse-dot 1.8s ease-in-out infinite; }
+        .exp__title { font-weight: 800; letter-spacing: -0.04em; line-height: .9; font-size: clamp(2.4rem, 6vw, 5rem); }
+        .exp__title .ln { display: block; will-change: transform, opacity, filter; }
+        .exp__title .ln.t-serif-ghost { padding: .24em 0 .26em; margin: -.22em 0 -.24em; }
+        .exp__lead {
+            margin: 1.6rem auto 0; max-width: 56ch; color: var(--stone-500);
+            font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.75; will-change: transform, opacity, filter;
+        }
+
+        .exp__stage {
+            position: relative; z-index: 2; border-radius: 28px; overflow: hidden; aspect-ratio: 16 / 9;
+            border: 1px solid var(--stone-300); box-shadow: 0 50px 100px -50px rgba(25,25,25,.55);
+            will-change: transform, opacity, filter; transform-style: preserve-3d;
+        }
+        .exp__media {
+            position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+            animation: kenburns 20s ease-in-out infinite alternate; will-change: transform;
+        }
+        @keyframes kenburns { from { transform: scale(1.05) translate(0, 0); } to { transform: scale(1.15) translate(-1.6%, -1.2%); } }
+        .exp__scrim { position: absolute; inset: 0; z-index: 2; background: linear-gradient(180deg, rgba(25,25,25,.10) 0%, transparent 30%, transparent 52%, rgba(25,25,25,.5) 100%); }
+        .exp__hud { position: absolute; top: clamp(1rem, 2.5vw, 2rem); right: clamp(1rem, 2.5vw, 2rem); z-index: 3; color: #fff; font-family: var(--font-mono); font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; opacity: .85; display: inline-flex; align-items: center; gap: .5rem; }
+        .exp__hud i { width: 7px; height: 7px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 10px #ef4444; animation: pulse-dot 1.4s ease-in-out infinite; }
+        .exp__cap {
+            position: absolute; left: clamp(1rem, 2.5vw, 2rem); bottom: clamp(1rem, 2.5vw, 2rem); z-index: 3;
+            display: inline-flex; align-items: center; gap: .6rem; padding: .55rem 1.05rem; border-radius: 999px;
+            background: rgba(255,255,255,.14); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,.3); color: #fff;
+            font-family: var(--font-mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase;
+        }
+        .exp__cap i { width: 6px; height: 6px; border-radius: 50%; background: var(--jade); box-shadow: 0 0 10px var(--jade); }
+
+        .exp__specs {
+            position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+            margin-top: clamp(2.5rem, 5vh, 4rem); background: var(--stone-300); border: 1px solid var(--stone-300);
+            border-radius: 20px; overflow: hidden;
+        }
+        .spec-card { background: rgba(255,255,255,.5); padding: clamp(1.4rem, 3vw, 2.2rem); display: flex; flex-direction: column; gap: .5rem; transition: background .5s var(--ease-opus); will-change: transform, opacity, filter; }
+        .spec-card:hover { background: #fff; }
+        .spec-card .v { font-weight: 800; font-size: clamp(1.7rem, 3vw, 2.5rem); letter-spacing: -.03em; line-height: 1; }
+        .spec-card .v em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--jade-700); font-size: .7em; }
+        .spec-card .l { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--stone-500); }
+
+        .exp__quote { position: relative; z-index: 2; max-width: 940px; margin: clamp(3.5rem, 8vh, 6rem) auto 0; text-align: center; will-change: transform, opacity, filter; }
+        .exp__quote blockquote { font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: clamp(1.6rem, 3.6vw, 2.9rem); line-height: 1.35; letter-spacing: -.01em; color: var(--ink); }
+        .exp__quote .accent { color: var(--jade-700); }
+        .exp__quote cite { display: block; margin-top: 1.6rem; font-family: var(--font-mono); font-style: normal; font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--stone-500); }
+        @media (max-width: 900px) { .exp__specs { grid-template-columns: repeat(2, 1fr); } .exp__stage { aspect-ratio: 4 / 3; } }
+
         /* ========= Responsive ========= */
         @media (max-width: 900px) {
             .hero { align-items: flex-end; padding-bottom: clamp(5rem, 16vh, 8rem); }
@@ -549,6 +621,44 @@
         </div>
     </section>
 
+
+    <!-- ================= THIRD FOLD : EXPERIENCE ================= -->
+    <section class="exp" id="experiencia">
+        <div class="exp__orb"></div>
+        <div class="exp__orb exp__orb--2"></div>
+
+        <div class="exp__head">
+            <span class="exp__eyebrow"><i></i>03 — A experiência</span>
+            <h2 class="exp__title">
+                <span class="ln">Cada traço,</span>
+                <span class="ln t-serif-ghost">uma assinatura.</span>
+            </h2>
+            <p class="exp__lead">
+                Da primeira palavra à última, a tinta desliza sem esforço. Um traço preciso,
+                silencioso e constante — a ferramenta desaparece e só resta a ideia.
+            </p>
+        </div>
+
+        <div class="exp__stage" id="expStage">
+            <img class="exp__media" src="assets/img/writing.jpg" alt="Escrevendo com a caneta OPUS" />
+            <div class="exp__scrim"></div>
+            <div class="exp__hud"><i></i>REC · 24 FPS</div>
+            <div class="exp__cap"><i></i>Em uso · ponta 0.1 mm · fluxo capilar</div>
+        </div>
+
+        <div class="exp__specs">
+            <div class="spec-card"><span class="v">0.1&nbsp;<em>mm</em></span><span class="l">Traço ultrafino</span></div>
+            <div class="spec-card"><span class="v">0.8&nbsp;<em>s</em></span><span class="l">Secagem instantânea</span></div>
+            <div class="spec-card"><span class="v">1.2&nbsp;<em>km</em></span><span class="l">Autonomia de tinta</span></div>
+            <div class="spec-card"><span class="v">100<em>%</em></span><span class="l">À prova d’água &amp; UV</span></div>
+        </div>
+
+        <div class="exp__quote">
+            <blockquote>“Você esquece que está segurando uma caneta. A mão apenas pensa — <span class="accent">e o traço aparece.</span>”</blockquote>
+            <cite>Marina Alves · Arquiteta &amp; Ilustradora</cite>
+        </div>
+    </section>
+
     <!-- ================= Side indicator ================= -->
     <aside class="side-indicator" aria-hidden="true">
         <span class="side-indicator__num">01</span>
@@ -639,6 +749,34 @@
               .to('.tech__panel', { autoAlpha: 0, scale: 1.05, filter: 'blur(14px)', duration: 2.2 }, 8.1)
               .to('.feat', { autoAlpha: 0, x: 30, filter: 'blur(10px)', duration: 2, stagger: 0.2 }, 8.0)
               .to('.tech__marquee', { autoAlpha: 0, y: -20, duration: 2 }, 8.4);
+        })();
+
+
+        /* ---------- THIRD FOLD : experience motion ---------- */
+        (function expMotion() {
+            const tl = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: '#experiencia', start: 'top 85%', end: 'bottom 12%', scrub: 1 } });
+            tl.fromTo('.exp__eyebrow', { autoAlpha: 0, y: 20, filter: 'blur(8px)' }, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 1.6 }, 0)
+              .fromTo('.exp__title .ln', { autoAlpha: 0, yPercent: 60, filter: 'blur(14px)' }, { autoAlpha: 1, yPercent: 0, filter: 'blur(0px)', duration: 2, stagger: 0.3 }, 0.1)
+              .fromTo('.exp__lead', { autoAlpha: 0, y: 24, filter: 'blur(10px)' }, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 2 }, 0.5)
+              .fromTo('.exp__stage', { autoAlpha: 0, y: 60, scale: 0.96, filter: 'blur(14px)' }, { autoAlpha: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 2.4 }, 0.5)
+              .fromTo('.spec-card', { autoAlpha: 0, y: 30, filter: 'blur(8px)' }, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 1.8, stagger: 0.18 }, 1.1)
+              .fromTo('.exp__quote', { autoAlpha: 0, y: 30, filter: 'blur(10px)' }, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 2 }, 1.5);
+            tl.to('.exp__head', { autoAlpha: 0, y: -30, filter: 'blur(12px)', duration: 2 }, 8.4)
+              .to('.exp__stage', { autoAlpha: 0, y: -30, scale: 1.03, filter: 'blur(12px)', duration: 2.2 }, 8.2)
+              .to('.exp__specs', { autoAlpha: 0, y: -20, filter: 'blur(10px)', duration: 2 }, 8.3)
+              .to('.exp__quote', { autoAlpha: 0, y: -20, filter: 'blur(10px)', duration: 2 }, 8.5);
+        })();
+        (function expTilt() {
+            const stage = document.getElementById('expStage');
+            if (!stage || !window.matchMedia('(pointer: fine)').matches) return;
+            const rx = gsap.quickTo(stage, 'rotationX', { duration: .8, ease: 'power3.out' });
+            const ry = gsap.quickTo(stage, 'rotationY', { duration: .8, ease: 'power3.out' });
+            stage.addEventListener('mousemove', (e) => {
+                const r = stage.getBoundingClientRect();
+                ry(((e.clientX - r.left) / r.width - .5) * 6);
+                rx(((e.clientY - r.top) / r.height - .5) * -6);
+            });
+            stage.addEventListener('mouseleave', () => { rx(0); ry(0); });
         })();
 
         /* ---------- Hide hero side-indicator once past hero ---------- */
