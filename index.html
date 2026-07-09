@@ -477,6 +477,74 @@
         .exp__quote cite { display: block; margin-top: 1.6rem; font-family: var(--font-mono); font-style: normal; font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--stone-500); }
         @media (max-width: 900px) { .exp__specs { grid-template-columns: repeat(2, 1fr); } .exp__stage { aspect-ratio: 4 / 3; } }
 
+
+        /* ============================================================
+           FOURTH FOLD — "O convite": video bg + glow card (flashlight)
+           Glow / flashlight / beam / glass from animations-gemini/index.html
+           ============================================================ */
+        .cta {
+            position: relative; z-index: 20; min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; overflow: hidden; isolation: isolate; background: var(--gallery);
+            padding: clamp(6rem, 14vh, 10rem) clamp(1.5rem, 6vw, 6rem) clamp(5rem, 10vh, 7rem);
+        }
+        .cta__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; transform: scale(1.1); filter: brightness(1.04) contrast(1.02) saturate(1.05); }
+        .cta__scrim { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(120% 78% at 50% 24%, rgba(240,239,234,.78), rgba(240,239,234,.34) 46%, rgba(240,239,234,.12) 72%), linear-gradient(180deg, rgba(240,239,234,.45), rgba(240,239,234,0) 26%); }
+        .cta__spot { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(46% 42% at 50% 68%, rgba(16,185,129,.14), transparent 62%); }
+        .cta__grain { position: absolute; inset: 0; z-index: 1; opacity: .07; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='cn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23cn)'/%3E%3C/svg%3E"); }
+        .cta__particles { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+        .cta__particles span { position: absolute; bottom: 8%; width: 3px; height: 3px; border-radius: 50%; background: rgba(110,231,183,.9); box-shadow: 0 0 8px rgba(16,185,129,.9); opacity: 0; animation: rise 13s linear infinite; }
+        @keyframes rise { 0% { transform: translateY(20px); opacity: 0; } 12% { opacity: .85; } 88% { opacity: .85; } 100% { transform: translateY(-64vh); opacity: 0; } }
+
+        .cta__inner { position: relative; z-index: 3; width: 100%; max-width: 1100px; text-align: center; color: #fff; perspective: 1500px; }
+        .cta__eyebrow { font-family: var(--font-mono); font-size: .66rem; letter-spacing: .3em; text-transform: uppercase; color: var(--jade-700); display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 1.4rem; will-change: transform, opacity, filter; }
+        .cta__eyebrow i { width: 6px; height: 6px; border-radius: 50%; background: var(--jade); box-shadow: 0 0 10px var(--jade); animation: pulse-dot 1.8s ease-in-out infinite; }
+        .cta__title { font-weight: 800; letter-spacing: -.04em; line-height: .9; font-size: clamp(2.6rem, 6.5vw, 5.4rem); color: var(--ink); }
+        .cta__title .ln { display: block; will-change: transform, opacity, filter; }
+        .cta__title .accent-serif { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: transparent; background: linear-gradient(115deg, #191919 8%, var(--jade-700) 55%, var(--jade) 100%); -webkit-background-clip: text; background-clip: text; display: block; padding: .24em 0 .26em; margin: -.22em 0 -.24em; }
+        .cta__lead { margin: 1.4rem auto 0; max-width: 54ch; color: var(--stone-500); font-size: clamp(.98rem, 1.15vw, 1.12rem); line-height: 1.7; will-change: transform, opacity, filter; }
+
+        /* --- glowing offer card --- */
+        .offer__glow { position: relative; max-width: 720px; margin: clamp(2.5rem, 5vh, 4rem) auto 0; border-radius: 28px; padding: 1.5px; overflow: hidden; box-shadow: 0 0 120px -30px rgba(16,185,129,.6); will-change: transform, opacity, filter; transform-style: preserve-3d; }
+        .offer__glow::before { content: ""; position: absolute; inset: -60%; z-index: 0; background: conic-gradient(from 0deg, transparent 0 120deg, rgba(16,185,129,.35) 160deg, rgba(110,231,183,.95) 180deg, rgba(16,185,129,.35) 200deg, transparent 250deg, transparent 320deg, rgba(255,255,255,.5) 350deg, rgba(255,255,255,.9) 360deg); animation: beam-spin 6s linear infinite; }
+        .offer {
+            position: relative; z-index: 1; border-radius: 27px; overflow: hidden; text-align: left;
+            background: linear-gradient(180deg, rgba(20,21,19,.92), rgba(10,11,9,.94)); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,.08); padding: clamp(1.8rem, 3.4vw, 2.8rem);
+        }
+        .offer__sheen { position: absolute; top: 0; left: 0; right: 0; height: 40%; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(255,255,255,.06), transparent); }
+        .offer::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit; background: radial-gradient(520px circle at var(--fx, 50%) var(--fy, 50%), rgba(16,185,129,.22), transparent 45%); opacity: 0; transition: opacity .5s; }
+        .offer:hover::before { opacity: 1; }
+        .offer > * { position: relative; z-index: 2; }
+
+        .offer__top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .glow-badge { display: inline-flex; align-items: center; gap: .5rem; font-family: var(--font-mono); font-size: .6rem; letter-spacing: .16em; text-transform: uppercase; color: var(--jade-300); border: 1px solid rgba(16,185,129,.35); border-radius: 999px; padding: .35rem .8rem; }
+        .glow-badge i { width: 5px; height: 5px; border-radius: 50%; background: var(--jade); box-shadow: 0 0 8px var(--jade); animation: pulse-dot 1.6s ease-in-out infinite; }
+        .offer__stock { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.5); }
+        .offer__stock b { color: #fff; }
+        .offer h3 { font-size: clamp(1.7rem, 3.2vw, 2.5rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.05; color: #fff; }
+        .offer h3 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--jade-300); }
+        .offer__list { list-style: none; margin: 1.4rem 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: .8rem 1.4rem; }
+        .offer__list li { display: flex; align-items: flex-start; gap: .6rem; color: rgba(255,255,255,.72); font-size: .9rem; line-height: 1.35; }
+        .offer__list iconify-icon { color: var(--jade); font-size: 1.1rem; flex: none; margin-top: .05rem; }
+        .glow-line { height: 1px; background: linear-gradient(90deg, rgba(255,255,255,.16), transparent); margin: 1.6rem 0; }
+        .glow-foot { display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; flex-wrap: wrap; }
+        .glow-price { display: flex; flex-direction: column; gap: .12rem; }
+        .glow-price .from { font-family: var(--font-mono); font-size: .56rem; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.4); }
+        .glow-price .amt { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; color: #fff; line-height: 1; }
+        .glow-price .inst { font-size: .74rem; color: rgba(255,255,255,.5); }
+        .glow-foot .btn-beam__inner { background: #fff; color: #0a0a09; padding: 1.05rem 1.7rem; }
+        .glow-trust { display: flex; gap: 1.4rem; flex-wrap: wrap; margin-top: 1.5rem; }
+        .glow-trust span { display: inline-flex; align-items: center; gap: .45rem; font-family: var(--font-mono); font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.48); }
+        .glow-trust iconify-icon { color: var(--jade-300); font-size: 1rem; }
+
+        /* bottom marquee */
+        .cta__marquee { position: absolute; bottom: 0; left: 0; right: 0; z-index: 2; padding: 1rem 0; border-top: 1px solid var(--stone-300); overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+        .cta__marquee .track { display: flex; width: max-content; animation: marquee 32s linear infinite; }
+        .cta__marquee .track span { font-family: var(--font-mono); font-size: .66rem; letter-spacing: .2em; text-transform: uppercase; color: var(--stone-500); display: inline-flex; align-items: center; gap: 2rem; margin: 0 2rem; }
+        .cta__marquee .track b { color: var(--jade-700); font-weight: 400; }
+
+        @media (max-width: 640px) { .offer__list { grid-template-columns: 1fr; } .glow-foot { flex-direction: column; align-items: stretch; } .glow-foot .btn-beam { width: 100%; } .glow-foot .btn-beam__inner { justify-content: center; width: 100%; } }
+
         /* ========= Responsive ========= */
         @media (max-width: 900px) {
             .hero { align-items: flex-end; padding-bottom: clamp(5rem, 16vh, 8rem); }
@@ -659,6 +727,81 @@
         </div>
     </section>
 
+
+    <!-- ================= FOURTH FOLD : CTA / GLOW ================= -->
+    <section class="cta" id="oferta">
+        <video class="cta__video" src="assets/raw_files/video3.mp4" poster="assets/frames/frame_0060.jpg" autoplay muted loop playsinline></video>
+        <div class="cta__scrim"></div>
+        <div class="cta__spot"></div>
+        <div class="cta__grain"></div>
+        <div class="cta__particles">
+            <span style="left:14%; animation-delay:0s;"></span>
+            <span style="left:28%; animation-delay:3s;"></span>
+            <span style="left:44%; animation-delay:6s;"></span>
+            <span style="left:60%; animation-delay:1.5s;"></span>
+            <span style="left:74%; animation-delay:8s;"></span>
+            <span style="left:88%; animation-delay:4.5s;"></span>
+        </div>
+
+        <div class="cta__inner">
+            <span class="cta__eyebrow"><i></i>04 — O convite</span>
+            <h2 class="cta__title">
+                <span class="ln">Uma peça,</span>
+                <span class="ln accent-serif">para a vida toda.</span>
+            </h2>
+            <p class="cta__lead">
+                Apenas 500 unidades. Numeradas, calibradas à mão e garantidas para sempre.
+                Quando esta série acabar, não haverá uma segunda.
+            </p>
+
+            <div class="offer__glow">
+                <div class="offer" id="offerCard">
+                    <div class="offer__sheen"></div>
+                    <div class="offer__top">
+                        <span class="glow-badge"><i></i>Edição limitada</span>
+                        <span class="offer__stock"><b>37</b> / 500 restantes</span>
+                    </div>
+                    <h3>Garanta a sua <em>OPUS nº1</em></h3>
+                    <ul class="offer__list">
+                        <li><iconify-icon icon="solar:check-circle-bold-duotone"></iconify-icon>Corpo em alumínio aeroespacial 7075-T6</li>
+                        <li><iconify-icon icon="solar:check-circle-bold-duotone"></iconify-icon>Garantia vitalícia — conserto ou troca</li>
+                        <li><iconify-icon icon="solar:check-circle-bold-duotone"></iconify-icon>Gravação do seu nome, sem custo</li>
+                        <li><iconify-icon icon="solar:check-circle-bold-duotone"></iconify-icon>Estojo em nogueira maciça + refil extra</li>
+                    </ul>
+
+                    <div class="glow-line"></div>
+
+                    <div class="glow-foot">
+                        <div class="glow-price">
+                            <span class="from">a partir de</span>
+                            <span class="amt">R$ 1.290</span>
+                            <span class="inst">ou 12× R$ 107 sem juros</span>
+                        </div>
+                        <button class="btn-beam" data-magnetic>
+                            <span class="btn-beam__inner">
+                                Garantir a minha OPUS
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+                            </span>
+                        </button>
+                    </div>
+
+                    <div class="glow-trust">
+                        <span><iconify-icon icon="solar:box-minimalistic-bold-duotone"></iconify-icon>Frete grátis</span>
+                        <span><iconify-icon icon="solar:refresh-bold-duotone"></iconify-icon>30 dias para trocar</span>
+                        <span><iconify-icon icon="solar:medal-ribbons-star-bold-duotone"></iconify-icon>Nº de série gravado</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta__marquee" aria-hidden="true">
+            <div class="track">
+                <span>Edição numerada <b>✦</b> Garantia vitalícia <b>✦</b> Alumínio 7075-T6 <b>✦</b> Frete grátis <b>✦</b> Gravação personalizada <b>✦</b></span>
+                <span>Edição numerada <b>✦</b> Garantia vitalícia <b>✦</b> Alumínio 7075-T6 <b>✦</b> Frete grátis <b>✦</b> Gravação personalizada <b>✦</b></span>
+            </div>
+        </div>
+    </section>
+
     <!-- ================= Side indicator ================= -->
     <aside class="side-indicator" aria-hidden="true">
         <span class="side-indicator__num">01</span>
@@ -706,6 +849,7 @@
 
         /* ---------- HERO pin + video progress ---------- */
         let progress = 0;
+        let heroVisible = true;
         ScrollTrigger.create({
             trigger: '#hero', start: 'top top', end: '+=280%',
             pin: true, scrub: true, anticipatePin: 1,
@@ -777,6 +921,39 @@
                 rx(((e.clientY - r.top) / r.height - .5) * -6);
             });
             stage.addEventListener('mouseleave', () => { rx(0); ry(0); });
+        })();
+
+
+        /* ---------- FOURTH FOLD : cta motion + flashlight + 3D tilt ---------- */
+        (function ctaMotion() {
+            gsap.timeline({ defaults: { ease: 'expo.out' }, scrollTrigger: { trigger: '#oferta', start: 'top 78%', toggleActions: 'play none none reverse' } })
+              .from('.cta__eyebrow', { autoAlpha: 0, y: 20, filter: 'blur(8px)', duration: 1 }, 0)
+              .from('.cta__title .ln', { autoAlpha: 0, yPercent: 80, filter: 'blur(14px)', duration: 1.2, stagger: 0.12 }, 0.1)
+              .from('.cta__lead', { autoAlpha: 0, y: 24, filter: 'blur(10px)', duration: 1 }, 0.45)
+              .from('.offer__glow', { autoAlpha: 0, y: 70, scale: 0.94, filter: 'blur(16px)', duration: 1.4 }, 0.55);
+        })();
+        (function offerInteract() {
+            const glow = document.getElementById('offerCard') && document.getElementById('offerCard').parentElement;
+            const card = document.getElementById('offerCard');
+            if (!card) return;
+            const fine = window.matchMedia('(pointer: fine)').matches;
+            const rx = fine ? gsap.quickTo(glow, 'rotationX', { duration: .8, ease: 'power3.out' }) : null;
+            const ry = fine ? gsap.quickTo(glow, 'rotationY', { duration: .8, ease: 'power3.out' }) : null;
+            card.addEventListener('mousemove', (e) => {
+                const r = card.getBoundingClientRect();
+                card.style.setProperty('--fx', (e.clientX - r.left) + 'px');
+                card.style.setProperty('--fy', (e.clientY - r.top) + 'px');
+                if (fine) { ry(((e.clientX - r.left) / r.width - .5) * 7); rx(((e.clientY - r.top) / r.height - .5) * -7); }
+            });
+            if (fine) card.addEventListener('mouseleave', () => { rx(0); ry(0); });
+        })();
+
+        /* ---------- Perf: gate hero canvas + pause CTA video off-screen ---------- */
+        (function perfGate() {
+            const hero = document.getElementById('hero');
+            if (hero) new IntersectionObserver((e) => { heroVisible = e[0].isIntersecting; }, { threshold: 0 }).observe(hero);
+            const v = document.querySelector('.cta__video'), sec = document.getElementById('oferta');
+            if (v && sec) new IntersectionObserver((e) => { if (e[0].isIntersecting) v.play().catch(() => {}); else v.pause(); }, { threshold: 0.05 }).observe(sec);
         })();
 
         /* ---------- Hide hero side-indicator once past hero ---------- */
@@ -856,6 +1033,7 @@
             }
             let currentFrame = 0;
             gsap.ticker.add(() => {
+                if (!heroVisible) return;
                 sizeCanvas();
                 const target = progress * (COUNT - 1);
                 currentFrame += (target - currentFrame) * 0.2;
