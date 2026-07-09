@@ -7,18 +7,10 @@
     <title>OPUS — Uma caneta que redefine a escrita.</title>
     <meta name="description" content="A combinação perfeita entre precisão, design e tecnologia para profissionais exigentes." />
 
-    <!--
-      ════════════════════════════════════════════════════════════════
-      VÍDEO FLUIDO — canvas + sequência de frames (técnica "Apple"), full-bleed.
-      TEXTO/BOTÕES — blur-in + fade-in na entrada; blur-out + fade-out
-      escalonado na saída (amarrado ao scroll, reversível ao subir).
-      Classes/valores do design_system.html (reveal · easing 0.16,1,0.3,1).
-      ════════════════════════════════════════════════════════════════
-    -->
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
 
     <style>
         /* ========= DESIGN TOKENS — from design_system12.html (OPUS) ========= */
@@ -29,6 +21,7 @@
             --jade: #10b981;
             --jade-300: #6ee7b7;
             --jade-700: #047857;
+            --stone-200: #e7e5e4;
             --stone-300: #D6D3D1;
             --stone-400: #a8a29e;
             --stone-500: #78716C;
@@ -53,7 +46,6 @@
 
         ::selection { background: var(--jade); color: #fff; }
 
-        /* ========= Serif gradient accent (line 3) ========= */
         .t-serif-ghost {
             font-family: var(--font-serif); font-style: italic; font-weight: 400;
             color: transparent;
@@ -112,8 +104,6 @@
             display: flex; align-items: center;
             padding: clamp(6rem, 12vh, 8rem) clamp(1.5rem, 6vw, 6rem) clamp(4rem, 9vh, 6rem);
         }
-
-        /* full-bleed media layer (canvas + video) */
         .hero__media { position: absolute; inset: 0; z-index: 0; overflow: hidden; will-change: transform; }
         #seq-canvas, #product-video {
             position: absolute; inset: 0; width: 100%; height: 100%;
@@ -123,28 +113,16 @@
         #seq-canvas.on { opacity: 1; }
         #product-video { z-index: 1; transition: opacity .6s ease; }
         #product-video.hide { opacity: 0; }
-
-        /* legibility scrim (paper tone on the left) + soft vignette */
         .hero__scrim {
             position: absolute; inset: 0; z-index: 3; pointer-events: none;
             background:
                 linear-gradient(101deg,
-                    rgba(240,239,234,.96) 0%,
-                    rgba(240,239,234,.82) 24%,
-                    rgba(240,239,234,.40) 46%,
-                    rgba(240,239,234,.05) 62%,
-                    rgba(240,239,234,0) 72%),
+                    rgba(240,239,234,.96) 0%, rgba(240,239,234,.82) 24%,
+                    rgba(240,239,234,.40) 46%, rgba(240,239,234,.05) 62%, rgba(240,239,234,0) 72%),
                 radial-gradient(130% 90% at 60% 108%, rgba(25,25,25,.12), transparent 60%);
         }
-
-        /* content overlay */
         .hero__content { position: relative; z-index: 10; max-width: 660px; width: 100%; }
-
-        /* elements that animate in/out get GPU hints */
-        .hero__eyebrow, .hero__title, .hero__desc, .hero__ctas, .hero__plaque {
-            will-change: transform, opacity, filter;
-        }
-
+        .hero__eyebrow, .hero__title, .hero__desc, .hero__ctas, .hero__plaque { will-change: transform, opacity, filter; }
         .hero__eyebrow {
             display: inline-flex; align-items: center; gap: .7rem;
             font-family: var(--font-mono); font-size: .68rem; letter-spacing: .32em;
@@ -152,21 +130,18 @@
         }
         @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
         .hero__eyebrow i { width: 6px; height: 6px; border-radius: 50%; background: var(--jade); animation: pulse-dot 2s ease-in-out infinite; }
-
-        /* — compact stacked headline (tight leading, no line gaps) — */
         .hero__title { font-weight: 800; letter-spacing: -0.045em; line-height: .86; font-size: clamp(2.7rem, 6vw, 5.4rem); }
         .hero__title .line { display: block; overflow: hidden; }
         .hero__title .line--2 { color: var(--stone-400); }
         .hero__title .line--3 { font-size: clamp(3rem, 6.6vw, 5.9rem); letter-spacing: -0.02em; }
         .line__inner { display: inline-block; will-change: transform; }
-
         .hero__desc {
             margin-top: clamp(1.4rem, 3vh, 2.1rem); max-width: 42ch;
             font-size: clamp(.95rem, 1.1vw, 1.08rem); font-weight: 400; line-height: 1.65; color: var(--stone-500);
         }
         .hero__ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; margin-top: clamp(1.6rem, 4vh, 2.6rem); }
 
-        /* — beam primary button — */
+        /* beam / ghost buttons */
         @keyframes beam-spin { to { transform: rotate(360deg); } }
         @keyframes shimmer { from { transform: translateX(-100%) skewX(-15deg); } to { transform: translateX(200%) skewX(-15deg); } }
         .btn-beam {
@@ -183,8 +158,6 @@
         .btn-beam:hover .btn-beam__inner::after { opacity: 1; animation: shimmer 1.4s infinite; }
         .btn-beam__inner svg { width: 15px; height: 15px; transition: transform .45s var(--ease-opus); }
         .btn-beam:hover .btn-beam__inner svg { transform: translateX(4px); }
-
-        /* — ghost secondary button — */
         .btn-ghost {
             display: inline-flex; align-items: center; gap: .6rem;
             font-size: .78rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
@@ -195,7 +168,6 @@
         }
         .btn-ghost:hover { background: var(--ink); color: #fff; }
 
-        /* ========= Floating product plaque ========= */
         .hero__plaque {
             position: absolute; z-index: 10;
             right: clamp(1.5rem, 4vw, 4rem); bottom: clamp(4.5rem, 12vh, 7rem);
@@ -221,6 +193,218 @@
         @keyframes hint-line { 0% { transform: scaleY(0); transform-origin: top; } 45% { transform: scaleY(1); transform-origin: top; } 55% { transform: scaleY(1); transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
         .scroll-hint i { width: 1px; height: 34px; background: var(--ink); animation: hint-line 2.2s var(--ease-opus) infinite; }
 
+        /* ============================================================
+           SECOND FOLD — "É engenharia" (tech benefits) · polished
+           ============================================================ */
+        .tech {
+            position: relative; z-index: 20; background: var(--gallery);
+            border-top: 1px solid var(--stone-300);
+            padding: clamp(6rem, 13vh, 11rem) clamp(1.5rem, 6vw, 6rem) clamp(4rem, 8vh, 7rem);
+            overflow: hidden;
+        }
+        /* film grain (from design_system .noise) */
+        .tech__noise {
+            position: absolute; inset: 0; z-index: 1; opacity: .05; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        /* faded blueprint grid */
+        .tech__bg {
+            position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .5;
+            background-image:
+                linear-gradient(rgba(25,25,25,.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(25,25,25,.04) 1px, transparent 1px);
+            background-size: 46px 46px;
+            -webkit-mask-image: radial-gradient(120% 90% at 50% 25%, #000 40%, transparent 85%);
+            mask-image: radial-gradient(120% 90% at 50% 25%, #000 40%, transparent 85%);
+        }
+        /* giant outlined watermark word */
+        .tech__watermark {
+            position: absolute; z-index: 0; left: 50%; top: 42%; transform: translate(-50%, -50%);
+            font-weight: 800; letter-spacing: -0.05em; white-space: nowrap; pointer-events: none; user-select: none;
+            font-size: clamp(9rem, 27vw, 26rem); line-height: 1; color: transparent;
+            -webkit-text-stroke: 1.5px rgba(25,25,25,.05);
+        }
+        /* ambient floating orbs */
+        @keyframes floaty { 0%,100% { transform: translate(0,0); } 50% { transform: translate(2%,-4%); } }
+        .tech__orb { position: absolute; z-index: 0; border-radius: 50%; filter: blur(70px); pointer-events: none; }
+        .tech__orb--1 { width: 34rem; height: 34rem; right: -8rem; top: 1rem; background: radial-gradient(circle, rgba(16,185,129,.13), transparent 65%); animation: floaty 16s ease-in-out infinite; }
+        .tech__orb--2 { width: 28rem; height: 28rem; left: -9rem; bottom: 4rem; background: radial-gradient(circle, rgba(168,162,158,.18), transparent 65%); animation: floaty 20s ease-in-out infinite reverse; }
+
+        .tech__intro { position: relative; z-index: 2; max-width: 760px; margin-bottom: clamp(3rem, 7vh, 5.5rem); }
+        .tech__eyebrow {
+            font-family: var(--font-mono); font-size: .66rem; letter-spacing: .3em; text-transform: uppercase;
+            color: var(--jade-700); display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 1.2rem;
+        }
+        .tech__eyebrow i { width: 6px; height: 6px; border-radius: 50%; background: var(--jade); animation: pulse-dot 1.8s ease-in-out infinite; }
+        .tech__title { font-weight: 800; letter-spacing: -0.04em; line-height: .9; font-size: clamp(2.3rem, 5.4vw, 4.6rem); }
+        .tech__title .ln { display: block; will-change: transform, opacity, filter; }
+        /* serif clip-text line: give the accent (top) + g descender (bottom) room WITHOUT adding visual leading */
+        .tech__title .ln.t-serif-ghost { padding: .24em 0 .26em; margin: -.22em 0 -.24em; }
+        .tech__lead {
+            margin-top: 1.5rem; max-width: 54ch; color: var(--stone-500);
+            font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.7; will-change: transform, opacity, filter;
+        }
+        .tech__lead b { color: var(--ink); font-weight: 600; }
+
+        .tech__grid {
+            position: relative; z-index: 2; display: grid;
+            grid-template-columns: 1.05fr .95fr; gap: clamp(2rem, 4.5vw, 5rem); align-items: center;
+        }
+
+        /* ---- visual panel : product scanner / blueprint HUD ---- */
+        .tech__panel {
+            position: relative; aspect-ratio: 5 / 4; border-radius: 28px; overflow: hidden;
+            background: #fff;
+            border: 1px solid var(--stone-300);
+            box-shadow: 0 40px 90px -46px rgba(25,25,25,.42), 0 1px 0 rgba(255,255,255,.9) inset;
+            will-change: transform, opacity, filter;
+        }
+
+        .panel__pen {
+            position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+            z-index: 0; will-change: transform;
+        }
+
+        .panel__grid {
+            position: absolute; inset: 0; z-index: 1; opacity: .4;
+            background-image:
+                linear-gradient(rgba(25,25,25,.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(25,25,25,.05) 1px, transparent 1px);
+            background-size: 34px 34px;
+        }
+        .panel__glow {
+            position: absolute; left: 50%; top: 50%; width: 58%; aspect-ratio: 1; z-index: 1;
+            transform: translate(-50%, -50%); border-radius: 50%;
+            background: radial-gradient(circle, rgba(16,185,129,.22), transparent 65%); filter: blur(32px);
+        }
+        .panel__radar { position: absolute; left: 50%; top: 50%; width: 62%; aspect-ratio: 1; transform: translate(-50%, -50%); z-index: 1; }
+        .panel__radar .ring { position: absolute; inset: 0; border: 1px solid rgba(16,185,129,.35); border-radius: 50%; animation: radar 4.5s ease-out infinite; }
+        .panel__radar .ring:nth-child(2) { animation-delay: 1.5s; }
+        .panel__radar .ring:nth-child(3) { animation-delay: 3s; }
+        @keyframes radar { 0% { transform: scale(.32); opacity: .7; } 100% { transform: scale(1); opacity: 0; } }
+
+        /* rotating dashed ring */
+        .panel__spinring {
+            position: absolute; left: 50%; top: 50%; width: 46%; aspect-ratio: 1; z-index: 1;
+            border: 1px dashed rgba(16,185,129,.4); border-radius: 50%;
+            animation: spinring 20s linear infinite;
+        }
+        @keyframes spinring { from { transform: translate(-50%, -50%) rotate(0); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* crosshair */
+        .panel__cross::before, .panel__cross::after { content: ""; position: absolute; background: rgba(25,25,25,.08); z-index: 1; }
+        .panel__cross::before { left: 50%; top: 7%; bottom: 7%; width: 1px; }
+        .panel__cross::after { top: 50%; left: 7%; right: 7%; height: 1px; }
+
+        /* sweeping scan line */
+        .panel__scan {
+            position: absolute; top: 0; bottom: 0; width: 130px; left: -130px; z-index: 2; pointer-events: none;
+            background: linear-gradient(90deg, transparent, rgba(16,185,129,.10), rgba(16,185,129,.22), transparent);
+            mix-blend-mode: multiply; animation: scan 5.5s cubic-bezier(.7,0,.3,1) infinite;
+        }
+        .panel__scan::after { content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(rgba(16,185,129,0), rgba(16,185,129,.7), rgba(16,185,129,0)); }
+        @keyframes scan { 0% { left: -130px; } 60%, 100% { left: 100%; } }
+
+        /* connector lines + traveling data pulses */
+        .panel__svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
+        .panel__svg line { stroke: rgba(25,25,25,.22); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-dasharray: 3 6; animation: dashflow 1.1s linear infinite; }
+        @keyframes dashflow { to { stroke-dashoffset: -18; } }
+        .panel__svg .flow { fill: var(--jade); }
+
+        /* corner reticles */
+        .corner { position: absolute; width: 20px; height: 20px; z-index: 4; border: 2px solid rgba(25,25,25,.32); }
+        .corner.tl { top: 15px; left: 15px; border-right: 0; border-bottom: 0; }
+        .corner.tr { top: 15px; right: 15px; border-left: 0; border-bottom: 0; }
+        .corner.bl { bottom: 15px; left: 15px; border-right: 0; border-top: 0; }
+        .corner.br { bottom: 15px; right: 15px; border-left: 0; border-top: 0; }
+
+        /* HUD micro-labels */
+        .hud { position: absolute; z-index: 4; font-family: var(--font-mono); font-size: .56rem; letter-spacing: .16em; text-transform: uppercase; color: var(--stone-400); }
+        .hud--tl { top: 22px; left: 46px; } .hud--br { bottom: 22px; right: 46px; }
+        .hud--live { display: inline-flex; align-items: center; gap: .4rem; color: var(--jade-700); }
+        .hud--live .d { width: 5px; height: 5px; border-radius: 50%; background: var(--jade); animation: pulse-dot 1.6s ease-in-out infinite; }
+
+        /* dimension spec ticks */
+        .spec { position: absolute; z-index: 4; font-family: var(--font-mono); font-size: .55rem; letter-spacing: .1em; color: var(--ink); display: flex; align-items: center; gap: .4rem; }
+        .spec i { display: block; height: 1px; width: 26px; background: rgba(25,25,25,.4); }
+        .spec--len { top: 22%; right: 30%; } .spec--len i { order: -1; }
+        .spec--dia { bottom: 24%; left: 20%; }
+
+        /* nodes */
+        .node {
+            position: absolute; width: clamp(46px, 4.4vw, 60px); aspect-ratio: 1; transform: translate(-50%, -50%);
+            border-radius: 16px; display: grid; place-items: center; z-index: 4; color: var(--ink);
+            font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+            background: var(--glass-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,.75); box-shadow: 0 12px 30px -14px rgba(25,25,25,.35);
+            transition: transform .4s var(--ease-opus), box-shadow .4s var(--ease-opus);
+        }
+        .node:hover { transform: translate(-50%, -50%) scale(1.08); box-shadow: 0 16px 36px -14px rgba(16,185,129,.4); }
+        .node b {
+            position: absolute; top: 108%; left: 50%; transform: translateX(-50%); white-space: nowrap;
+            font-family: var(--font-mono); font-size: .54rem; letter-spacing: .12em; text-transform: uppercase; color: var(--stone-500);
+        }
+        .node--a { left: 19%; top: 25%; } .node--b { left: 82%; top: 30%; } .node--c { left: 80%; top: 74%; }
+        .node iconify-icon { color: var(--jade-700); }
+
+        .panel__dot { position: absolute; width: 7px; height: 7px; border-radius: 50%; background: var(--jade); transform: translate(-50%, -50%); z-index: 3; animation: dotpulse 2.4s ease-out infinite; }
+        @keyframes dotpulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,.5); } 100% { box-shadow: 0 0 0 13px rgba(16,185,129,0); } }
+
+        /* ---- numbered feature list ---- */
+        .tech__features { list-style: none; display: flex; flex-direction: column; gap: clamp(.5rem, 1.4vh, 1rem); }
+        .feat {
+            position: relative; display: grid; grid-template-columns: auto 1fr; gap: clamp(1rem, 1.6vw, 1.5rem); align-items: start;
+            padding: clamp(1rem, 2vh, 1.5rem) 1rem clamp(1rem, 2vh, 1.5rem) 1.25rem; border-radius: 16px;
+            transition: background .5s var(--ease-opus); will-change: transform, opacity, filter;
+        }
+        .feat::before {
+            content: ""; position: absolute; left: 0; top: 14%; bottom: 14%; width: 2px; border-radius: 2px;
+            background: linear-gradient(var(--jade), var(--jade-700));
+            transform: scaleY(0); transform-origin: top; transition: transform .5s var(--ease-opus);
+        }
+        .feat + .feat { border-top: 1px solid var(--stone-300); }
+        .feat:hover { background: rgba(255,255,255,.55); }
+        .feat:hover::before { transform: scaleY(1); }
+        .feat__num {
+            width: 56px; height: 56px; flex: none; border-radius: 50%; border: 1px solid var(--stone-300);
+            display: grid; place-items: center; font-family: var(--font-mono); font-size: .8rem; color: var(--stone-400);
+            background: rgba(255,255,255,.5); transition: all .5s var(--ease-opus); position: relative; overflow: hidden;
+        }
+        .feat__num iconify-icon { position: absolute; opacity: 0; transform: scale(.5); transition: all .45s var(--ease-opus); font-size: 1.4rem; color: var(--ink); }
+        .feat:hover .feat__num { border-color: var(--ink); background: #fff; transform: translateY(-2px); box-shadow: 0 12px 26px -14px rgba(25,25,25,.4); }
+        .feat:hover .feat__num .n { opacity: 0; transform: scale(.5); }
+        .feat:hover .feat__num iconify-icon { opacity: 1; transform: scale(1); }
+        .feat__num .n { transition: all .45s var(--ease-opus); }
+        .feat__title {
+            font-size: clamp(1.15rem, 1.6vw, 1.45rem); font-weight: 700; letter-spacing: -0.02em;
+            display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; line-height: 1.2;
+        }
+        .badge {
+            font-family: var(--font-mono); font-size: .62rem; letter-spacing: .04em;
+            background: var(--ink); color: #fff; padding: .18rem .5rem; border-radius: 6px; font-weight: 400;
+        }
+        .badge--jade { background: var(--jade-700); }
+        .feat__desc { margin-top: .5rem; color: var(--stone-500); font-size: .95rem; line-height: 1.6; max-width: 46ch; }
+        .feat__desc b { color: var(--ink); font-weight: 600; }
+
+        /* ---- bottom marquee (from design_system) ---- */
+        .tech__marquee {
+            position: relative; z-index: 2; overflow: hidden;
+            margin: clamp(3.5rem, 8vh, 6rem) calc(-1 * clamp(1.5rem, 6vw, 6rem)) 0;
+            border-top: 1px solid var(--stone-300); border-bottom: 1px solid var(--stone-300);
+            background: rgba(255,255,255,.4); padding: 1.05rem 0;
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+        }
+        .tech__marquee .track { display: flex; width: max-content; animation: marquee 34s linear infinite; }
+        .tech__marquee .track span {
+            font-family: var(--font-mono); font-size: .72rem; letter-spacing: .2em; text-transform: uppercase;
+            color: var(--stone-500); display: inline-flex; align-items: center; gap: 2.2rem; margin: 0 2.2rem;
+        }
+        .tech__marquee .track b { color: var(--jade-700); font-weight: 400; }
+        .tech__marquee .track .star { color: var(--jade); }
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
         /* ========= Responsive ========= */
         @media (max-width: 900px) {
             .hero { align-items: flex-end; padding-bottom: clamp(5rem, 16vh, 8rem); }
@@ -232,12 +416,18 @@
             .hero__content { max-width: 100%; }
             .hero__plaque { bottom: auto; top: clamp(5rem, 12vh, 7rem); right: clamp(1rem, 4vw, 2rem); }
             .side-indicator { display: none; }
+            .tech__grid { grid-template-columns: 1fr; gap: 2.5rem; }
         }
         @media (max-width: 640px) {
             .nav__links { display: none; }
             .hero__ctas { gap: .9rem; } .btn-beam__inner { padding: .95rem 1.7rem; }
+            .feat__num { width: 46px; height: 46px; }
+            .spec { display: none; }
         }
-        @media (prefers-reduced-motion: reduce) { .particle, .scroll-hint i { animation: none !important; } }
+        @media (prefers-reduced-motion: reduce) {
+            .particle, .scroll-hint i, .panel__radar .ring, .panel__svg line, .panel__dot,
+            .panel__scan, .panel__spinring, .tech__orb, .tech__marquee .track, .panel__svg .flow { animation: none !important; }
+        }
     </style>
 </head>
 
@@ -261,37 +451,27 @@
 
     <!-- ================= HERO ================= -->
     <section class="hero" id="hero">
-
-        <!-- full-bleed media : the pen video is the centerpiece -->
         <div class="hero__media" id="media">
             <canvas id="seq-canvas"></canvas>
             <video id="product-video" src="assets/raw_files/video3.mp4" muted playsinline preload="auto" aria-label="Vídeo da caneta OPUS"></video>
         </div>
-
-        <!-- legibility scrim -->
         <div class="hero__scrim"></div>
-
-        <!-- ambient particles -->
         <div class="particle" style="left:10%; animation-delay:0s;"></div>
         <div class="particle" style="left:22%; animation-delay:3.2s;"></div>
         <div class="particle" style="left:34%; animation-delay:6.4s;"></div>
         <div class="particle" style="left:16%; animation-delay:8.1s;"></div>
 
-        <!-- content overlay -->
         <div class="hero__content">
             <p class="hero__eyebrow" data-fade><i></i>Edição 01 · Lançamento 2026</p>
-
             <h1 class="hero__title" aria-label="Uma caneta que redefine a escrita.">
                 <span class="line line--1" data-split>Uma caneta</span>
                 <span class="line line--2" data-split>que redefine</span>
                 <span class="line line--3"><span class="line__inner t-serif-ghost" id="lineGhost">a escrita.</span></span>
             </h1>
-
             <p class="hero__desc" data-fade>
                 A combinação perfeita entre precisão, design e tecnologia
                 para profissionais exigentes.
             </p>
-
             <div class="hero__ctas" data-fade>
                 <button class="btn-beam" data-magnetic>
                     <span class="btn-beam__inner">
@@ -299,15 +479,73 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
                     </span>
                 </button>
-                <a class="btn-ghost" href="#design" data-magnetic>Conhecer</a>
+                <a class="btn-ghost" href="#tecnologia" data-magnetic>Conhecer</a>
             </div>
         </div>
 
-        <!-- floating product plaque -->
         <div class="hero__plaque" data-fade>
-            <strong>OPUS nº1</strong>
-            <i></i>
-            <span>Titânio · ponta 0.4&nbsp;mm</span>
+            <strong>OPUS nº1</strong><i></i><span>Titânio · ponta 0.4&nbsp;mm</span>
+        </div>
+    </section>
+
+    <!-- ================= SECOND FOLD : TECH ================= -->
+    <section class="tech" id="tecnologia">
+        <div class="tech__bg"></div>
+        <div class="tech__noise"></div>
+        <div class="tech__orb tech__orb--1"></div>
+        <div class="tech__orb tech__orb--2"></div>
+        <div class="tech__watermark" aria-hidden="true">PRECISÃO</div>
+
+        <div class="tech__intro">
+            <span class="tech__eyebrow"><i></i>02 — Instrumento de precisão</span>
+            <h2 class="tech__title">
+                <span class="ln">Não é uma caneta.</span>
+                <span class="ln t-serif-ghost">É engenharia.</span>
+            </h2>
+            <p class="tech__lead">
+                Cada OPUS nasce de <b>184 operações de usinagem</b> e passa por inspeção individual.
+                Um instrumento calibrado ao mícron — projetado para escrever por gerações, não por meses.
+            </p>
+        </div>
+
+        <div class="tech__grid">
+            <!-- visual : product scanner HUD -->
+            <div class="tech__panel" id="techPanel">
+                <img class="panel__pen" src="assets/frames/frame_0001.jpg" alt="Caneta OPUS nº1" />
+            </div>
+
+            <!-- numbered features -->
+            <ol class="tech__features">
+                <li class="feat">
+                    <div class="feat__num"><span class="n">01</span><iconify-icon icon="solar:settings-bold-duotone"></iconify-icon></div>
+                    <div>
+                        <h3 class="feat__title">Engenharia Suíça <span class="badge">±0.01&nbsp;mm</span></h3>
+                        <p class="feat__desc">Mecanismo de escrita calibrado em oficina suíça, com tolerância de <b>0,01&nbsp;mm</b>. Cada peça é medida e aprovada individualmente antes da montagem.</p>
+                    </div>
+                </li>
+                <li class="feat">
+                    <div class="feat__num"><span class="n">02</span><iconify-icon icon="solar:rocket-2-bold-duotone"></iconify-icon></div>
+                    <div>
+                        <h3 class="feat__title">Alumínio Aeroespacial <span class="badge">7075-T6</span></h3>
+                        <p class="feat__desc">Corpo usinado em <b>alumínio 7075-T6 anodizado</b> — a mesma liga de turbinas e fuselagens. <b>40% mais leve</b> que o latão e com rigidez incomparável.</p>
+                    </div>
+                </li>
+                <li class="feat">
+                    <div class="feat__num"><span class="n">03</span><iconify-icon icon="solar:pipette-bold-duotone"></iconify-icon></div>
+                    <div>
+                        <h3 class="feat__title">Tinta Pigmentum™ <span class="badge badge--jade">200 anos</span></h3>
+                        <p class="feat__desc">Tinta pigmentada com <b>nanopartículas de carbono</b> e fluxo capilar constante. À prova d'água e resistente a UV por <b>até 200 anos</b> sem desbotar.</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+
+        <!-- bottom marquee -->
+        <div class="tech__marquee" aria-hidden="true">
+            <div class="track">
+                <span>Engenharia Suíça <b class="star">✦</b> Alumínio 7075-T6 <b class="star">✦</b> Tinta <b>Pigmentum™</b> <b class="star">✦</b> Tolerância ±0.01&nbsp;mm <b class="star">✦</b> Resistência UV 200 anos <b class="star">✦</b> 184 operações de usinagem <b class="star">✦</b></span>
+                <span>Engenharia Suíça <b class="star">✦</b> Alumínio 7075-T6 <b class="star">✦</b> Tinta <b>Pigmentum™</b> <b class="star">✦</b> Tolerância ±0.01&nbsp;mm <b class="star">✦</b> Resistência UV 200 anos <b class="star">✦</b> 184 operações de usinagem <b class="star">✦</b></span>
+            </div>
         </div>
     </section>
 
@@ -331,42 +569,32 @@
     <script src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js"></script>
 
     <script>
-        /* ============================================================
-           OPUS.pen — full-bleed Hero controller
-           ============================================================ */
         gsap.registerPlugin(ScrollTrigger);
 
-        /* ---------- Lenis smooth scroll on the GSAP ticker ---------- */
         const lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((t) => lenis.raf(t * 1000));
         gsap.ticker.lagSmoothing(0);
 
-        /* ---------- Base transform for the media (overscan for parallax) ---------- */
         const media = document.getElementById('media');
         gsap.set(media, { scale: 1.06 });
 
-        /* ============================================================
-           ENTRANCE — blur-in + fade-in on load (text + buttons)
-           (mask reveal on the headline + blur/fade on everything)
-           ============================================================ */
+        /* ---------- HERO entrance ---------- */
         document.querySelectorAll('[data-split]').forEach((el) => new SplitType(el, { types: 'chars' }));
         gsap.timeline({
             defaults: { ease: 'expo.out' },
-            // tight leading clips descenders while overflow is hidden — release it
-            // once the reveal is done so lines stay compact AND nothing is cut.
             onComplete: () => gsap.set('.hero__title .line', { overflow: 'visible' })
         })
             .from('#media', { autoAlpha: 0, duration: 1.6 }, 0)
             .from('#nav', { yPercent: -100, autoAlpha: 0, duration: 1 }, 0.1)
-            .from('.hero__title', { filter: 'blur(14px)', duration: 1.5, ease: 'power2.out' }, 0.3)   // blur-in on the whole headline
+            .from('.hero__title', { filter: 'blur(14px)', duration: 1.5, ease: 'power2.out' }, 0.3)
             .from('.line--1 .char', { yPercent: 115, duration: 1.1, stagger: 0.035 }, 0.3)
             .from('.line--2 .char', { yPercent: 115, duration: 1.1, stagger: 0.035 }, 0.45)
             .from('#lineGhost', { yPercent: 115, duration: 1.25 }, 0.65)
             .from('[data-fade]', { y: 26, autoAlpha: 0, filter: 'blur(10px)', duration: 1, stagger: 0.12 }, 0.9)
             .from('.side-indicator', { x: 30, autoAlpha: 0, duration: 1 }, 1.1);
 
-        /* ---------- Shared scroll progress (0 → 1) for the pinned hero ---------- */
+        /* ---------- HERO pin + video progress ---------- */
         let progress = 0;
         ScrollTrigger.create({
             trigger: '#hero', start: 'top top', end: '+=280%',
@@ -378,24 +606,68 @@
             },
         });
 
-        /* ============================================================
-           EXIT — same animation, reversed: blur-out + fade-out as you
-           scroll down (staggered), and it reverses back when scrolling up.
-           immediateRender:false → keeps the natural state until scrolled,
-           so it never fights the entrance timeline on load.
-           ============================================================ */
+        /* ---------- HERO exit ---------- */
         gsap.timeline({
             defaults: { ease: 'none', immediateRender: false },
             scrollTrigger: { trigger: '#hero', start: 'top top', end: '+=150%', scrub: true }
         })
-            .to('.hero__eyebrow',      { autoAlpha: 0, y: -36, filter: 'blur(12px)' }, 0.00)
-            .to('.hero__title .line',  { autoAlpha: 0, y: -56, filter: 'blur(16px)', stagger: 0.05 }, 0.04)
-            .to('.hero__desc',         { autoAlpha: 0, y: -40, filter: 'blur(12px)' }, 0.16)
-            .to('.hero__ctas',         { autoAlpha: 0, y: -40, filter: 'blur(12px)' }, 0.22)
-            .to('.hero__plaque',       { autoAlpha: 0, y: 30,  filter: 'blur(12px)' }, 0.10);
+            .to('.hero__eyebrow',     { autoAlpha: 0, y: -36, filter: 'blur(12px)' }, 0.00)
+            .to('.hero__title .line', { autoAlpha: 0, y: -56, filter: 'blur(16px)', stagger: 0.05 }, 0.04)
+            .to('.hero__desc',        { autoAlpha: 0, y: -40, filter: 'blur(12px)' }, 0.16)
+            .to('.hero__ctas',        { autoAlpha: 0, y: -40, filter: 'blur(12px)' }, 0.22)
+            .to('.hero__plaque',      { autoAlpha: 0, y: 30,  filter: 'blur(12px)' }, 0.10);
 
         /* ============================================================
-           ENGINE SELECTION — probe assets/frames/frame_0001.jpg
+           SECOND FOLD — symmetric enter/exit (blur · fade · scale)
+           ============================================================ */
+        (function techMotion() {
+            const tl = gsap.timeline({
+                defaults: { ease: 'none' },
+                scrollTrigger: { trigger: '#tecnologia', start: 'top 88%', end: 'bottom 12%', scrub: 1 }
+            });
+            // ENTER
+            tl.fromTo('.tech__eyebrow', { autoAlpha: 0, y: 20, filter: 'blur(8px)' }, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 1.6 }, 0)
+              .fromTo('.tech__title .ln', { autoAlpha: 0, yPercent: 60, filter: 'blur(14px)' }, { autoAlpha: 1, yPercent: 0, filter: 'blur(0px)', duration: 2, stagger: 0.35 }, 0.1)
+              .fromTo('.tech__lead', { autoAlpha: 0, y: 26, filter: 'blur(10px)' }, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 2 }, 0.5)
+              .fromTo('.tech__panel', { autoAlpha: 0, scale: 0.92, filter: 'blur(14px)' }, { autoAlpha: 1, scale: 1, filter: 'blur(0px)', duration: 2.4 }, 0.4)
+              .fromTo('.feat', { autoAlpha: 0, x: 44, filter: 'blur(10px)' }, { autoAlpha: 1, x: 0, filter: 'blur(0px)', duration: 2, stagger: 0.3 }, 0.8)
+              .fromTo('.tech__marquee', { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 1.6 }, 1.4);
+            // EXIT
+            tl.to('.tech__eyebrow', { autoAlpha: 0, y: -24, filter: 'blur(10px)', duration: 2 }, 8.2)
+              .to('.tech__title .ln', { autoAlpha: 0, yPercent: -50, filter: 'blur(16px)', duration: 2, stagger: 0.2 }, 8.0)
+              .to('.tech__lead', { autoAlpha: 0, y: -30, filter: 'blur(12px)', duration: 2 }, 8.2)
+              .to('.tech__panel', { autoAlpha: 0, scale: 1.05, filter: 'blur(14px)', duration: 2.2 }, 8.1)
+              .to('.feat', { autoAlpha: 0, x: 30, filter: 'blur(10px)', duration: 2, stagger: 0.2 }, 8.0)
+              .to('.tech__marquee', { autoAlpha: 0, y: -20, duration: 2 }, 8.4);
+        })();
+
+        /* ---------- Hide hero side-indicator once past hero ---------- */
+        ScrollTrigger.create({
+            trigger: '#tecnologia', start: 'top 92%',
+            onEnter: () => gsap.to('.side-indicator', { autoAlpha: 0, duration: 0.4 }),
+            onLeaveBack: () => gsap.to('.side-indicator', { autoAlpha: 1, duration: 0.4 }),
+        });
+
+        /* ---------- Panel : flashlight glow + pen parallax ---------- */
+        const panel = document.getElementById('techPanel');
+        const penImg = panel.querySelector('.panel__pen');
+        gsap.set(penImg, { scale: 1.08 });
+        const fineP = window.matchMedia('(pointer: fine)').matches;
+        if (fineP) {
+            const px = gsap.quickTo(penImg, 'x', { duration: 1, ease: 'power3.out' });
+            const py = gsap.quickTo(penImg, 'y', { duration: 1, ease: 'power3.out' });
+            panel.addEventListener('mousemove', (e) => {
+                const r = panel.getBoundingClientRect();
+                const nx = (e.clientX - r.left) / r.width, ny = (e.clientY - r.top) / r.height;
+                panel.style.setProperty('--mx', (nx * 100) + '%');
+                panel.style.setProperty('--my', (ny * 100) + '%');
+                px((nx - 0.5) * 14); py((ny - 0.5) * 14);
+            });
+            panel.addEventListener('mouseleave', () => { px(0); py(0); });
+        }
+
+        /* ============================================================
+           VIDEO ENGINE — canvas frame sequence (A) / video (B)
            ============================================================ */
         const FRAME_DIR = 'assets/frames/', FRAME_EXT = '.jpg';
         const frameURL = (i) => FRAME_DIR + 'frame_' + String(i).padStart(4, '0') + FRAME_EXT;
@@ -422,18 +694,13 @@
             startCanvasEngine(frames.filter(Boolean));
         })();
 
-        /* ============================================================
-           ENGINE A — Canvas frame sequence (no decode, no seek)
-           ============================================================ */
         function startCanvasEngine(frames) {
             const COUNT = frames.length;
             if (COUNT < 2) { startVideoEngine(); return; }
-
             const canvas = document.getElementById('seq-canvas');
             const ctx = canvas.getContext('2d');
             const video = document.getElementById('product-video');
             canvas.classList.add('on');
-
             let cw = 0, ch = 0;
             function sizeCanvas() {
                 const r = canvas.getBoundingClientRect();
@@ -462,9 +729,6 @@
             }));
         }
 
-        /* ============================================================
-           ENGINE B — Seek-gated video scrub (fallback)
-           ============================================================ */
         function startVideoEngine() {
             const video = document.getElementById('product-video');
             let seeking = false, ready = false;
@@ -482,10 +746,9 @@
             });
         }
 
-        /* ---------- Scroll-linked depth (media slow-zoom) ---------- */
+        /* ---------- Hero depth + mouse parallax ---------- */
         gsap.to('#media', { scale: 1.14, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: '+=280%', scrub: true } });
 
-        /* ---------- Mouse parallax (media drift + magnetic buttons) ---------- */
         const fine = window.matchMedia('(pointer: fine)').matches;
         if (fine) {
             const mx = gsap.quickTo(media, 'x', { duration: 1, ease: 'power3.out' });
@@ -495,7 +758,6 @@
                 const ny = e.clientY / window.innerHeight - 0.5;
                 mx(nx * -24); my(ny * -24);
             });
-
             document.querySelectorAll('[data-magnetic]').forEach((btn) => {
                 const qx = gsap.quickTo(btn, 'x', { duration: 0.5, ease: 'power3.out' });
                 const qy = gsap.quickTo(btn, 'y', { duration: 0.5, ease: 'power3.out' });
