@@ -1,0 +1,6 @@
+# Dev-only — não publicar no site
+design-system
+reference
+tools
+deploy.bat
+*.bat
