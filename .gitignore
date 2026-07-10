@@ -1,3 +1,11 @@
-# Debug screenshots (gerados durante o desenvolvimento)
+# Debug screenshots (dev only)
 shot*.png
 v_*.png
+_*.py
+_*.html
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
