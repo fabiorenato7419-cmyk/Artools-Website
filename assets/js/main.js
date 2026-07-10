@@ -160,7 +160,7 @@
         /* ============================================================
            VIDEO ENGINE — canvas frame sequence (A) / video (B)
            ============================================================ */
-        const FRAME_DIR = 'assets/frames/', FRAME_EXT = '.jpg';
+        const FRAME_DIR = 'assets/frames/', FRAME_EXT = '.webp';
         const frameURL = (i) => FRAME_DIR + 'frame_' + String(i).padStart(4, '0') + FRAME_EXT;
         const loadImg = (src) => new Promise((res) => {
             const img = new Image();
